@@ -1,0 +1,35 @@
+Design code 
+module BCD_Adder(
+    input  logic [7:0] A,       // 8-bit BCD input A
+    input  logic [7:0] B,       // 8-bit BCD input B
+    input  logic       Cin,     // Carry input
+    output logic [7:0] S,       // 8-bit BCD sum output
+    output logic       Cout     // Carry output
+);
+    // Internal signals
+    logic [3:0] sum_low, sum_high;    // Intermediate sums for lower and upper nibbles
+    logic [3:0] corr_low, corr_high; // Corrected values for lower and upper nibbles
+    logic       carry_low, carry_high; // Carry signals for lower and upper nibbles
+    logic       corr_flag_low, corr_flag_high; // Flags to determine correction
+
+    // Lower nibble addition
+    always_comb begin
+        {carry_low, sum_low} = A[3:0] + B[3:0] + Cin;
+        corr_flag_low = (sum_low > 4'd9) | carry_low; // BCD correction condition
+        corr_low = corr_flag_low ? (sum_low + 4'd6) : sum_low;
+    end
+
+    // Upper nibble addition
+    always_comb begin
+        {carry_high, sum_high} = A[7:4] + B[7:4] + corr_flag_low;
+        corr_flag_high = (sum_high > 4'd9) | carry_high; // BCD correction condition
+        corr_high = corr_flag_high ? (sum_high + 4'd6) : sum_high;
+    end
+
+    // Outputs
+    always_comb begin
+        S = {corr_high, corr_low};
+        Cout = corr_flag_high; // Final carry out from the upper nibble
+    end
+
+endmodule
