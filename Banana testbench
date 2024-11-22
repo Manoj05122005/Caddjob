@@ -1,0 +1,43 @@
+module BCD_Adder_tb;
+
+    // Inputs to the BCD adder
+    logic [7:0] A, B;  // 8-bit BCD inputs
+    logic       Cin;   // Carry input
+
+    // Outputs from the BCD adder
+    logic [7:0] S;     // 8-bit BCD sum output
+    logic       Cout;  // Carry output
+
+    // Instantiate the DUT (Device Under Test)
+    BCD_Adder dut (
+        .A(A),
+        .B(B),
+        .Cin(Cin),
+        .S(S),
+        .Cout(Cout)
+    );
+
+    // Test stimulus
+    initial begin
+        // Test cases: A, B, Cin -> Expected S, Cout
+        $display("Time\tA\tB\tCin\tS\tCout");
+        $monitor("%0t\t%h\t%h\t%b\t%h\t%b", $time, A, B, Cin, S, Cout);
+
+        // Test case 1: Add 12 + 34 with no carry
+        A = 8'h12; B = 8'h34; Cin = 1'b0;
+        #10; // Wait for 10 time units
+
+        // Test case 2: Add 45 + 55 with no carry (should trigger correction)
+        A = 8'h45; B = 8'h55; Cin = 1'b0;
+        #10;
+
+        // Test case 3: Add 99 + 99 with carry in
+        A = 8'h99; B = 8'h99; Cin = 1'b1;
+        #10;
+
+        // Test case 4: Add 09 + 02 with no carry
+        A = 8'h09; B = 8'h02; Cin = 1'b0;
+        #10;
+
+        // Test case 5: Add 80 + 19 with carry in
+        A = 8'h80;
