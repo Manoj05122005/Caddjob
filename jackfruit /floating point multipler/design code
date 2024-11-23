@@ -1,0 +1,39 @@
+module floatingpointmultipler(
+    input  logic [31:0] a,
+    input  logic [31:0] b,
+    output logic [31:0] result
+);
+
+    
+    logic [7:0]  exp_a, exp_b;
+    logic [23:0] mant_a, mant_b;
+    logic [47:0] mant_product;
+    logic [7:0]  exp_sum;
+    logic [23:0] mantissa_final;
+
+    
+    assign exp_a  = a[30:23];
+    assign exp_b  = b[30:23];
+    assign mant_a = {1'b1, a[22:0]};  
+    assign mant_b = {1'b1, b[22:0]};
+
+    
+    assign mant_product = mant_a * mant_b;
+
+    always_comb begin
+        
+        exp_sum = exp_a + exp_b - 8'd127;
+
+        
+        if (mant_product[47]) begin  
+            mantissa_final = mant_product[46:23];  
+            exp_sum = exp_sum + 1;  
+        end else begin
+            mantissa_final = mant_product[45:22];  
+        end
+    end
+
+    
+    assign result = {1'b0, exp_sum, mantissa_final};
+
+endmodule
