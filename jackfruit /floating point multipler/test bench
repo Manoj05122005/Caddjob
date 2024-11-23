@@ -1,0 +1,28 @@
+module floatingpointmutipliertb;
+
+    logic [31:0] a, b;
+    logic [31:0] result;
+
+    
+    floatingpointmultipler uut (
+        .a(a),
+        .b(b),
+        .result(result)
+    );
+
+    initial begin
+        
+        a = 32'h40400000; 
+        b = 32'h40800000;  
+        #10;
+        $display("A = %h, B = %h, Result = %h", a, b, result);  
+
+        a = 32'h3F800000;  
+        b = 32'h40000000;  
+        #10;
+        $display("A = %h, B = %h, Result = %h", a, b, result);  
+
+        
+        $finish;
+    end
+endmodule
